@@ -1,3 +1,14 @@
+/**
+ * Reusable dropdown component with virtualization support
+ * Features: Single/Multi-select, search, select-all, performance optimizations
+ * Props:
+ *  - options: Array of {value, label} objects
+ *  - value: Current selected value(s)
+ *  - onChange: Selection change handler
+ *  - isMulti: Enable multi-select mode
+ *  - placeholder: Input placeholder text
+ */
+
 import React, { useState, useEffect, useRef, useCallback, memo, useMemo } from 'react';
 import { FixedSizeList as List } from 'react-window';
 import PropTypes from 'prop-types';
@@ -22,12 +33,14 @@ const Dropdown = ({
       option.label.toLowerCase().includes(searchTerm.toLowerCase())
     ), [options, searchTerm]);
   
+  // Click outside handler
   const handleClickOutside = useCallback((event) => {
     if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
       setIsOpen(false);
     }
   }, []);
 
+  // Effect for click-outside detection
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -44,6 +57,7 @@ const Dropdown = ({
 
   const toggleDropdown = () => setIsOpen(!isOpen);
 
+  // Selection logic
   const handleSelect = (option) => {
     if (isMulti) {
       const newValue = value.includes(option.value)
@@ -80,6 +94,7 @@ const Dropdown = ({
     isMulti
   };
 
+  // Virtualization row component
   const Row = memo(({ index, style, data }) => {
     const option = data.options[index];
     return (
@@ -171,13 +186,13 @@ const Dropdown = ({
               </div>
             )}
             <List
-              height={Math.min(250, filteredOptions.length * 35)}
-              itemCount={filteredOptions.length}
-              itemSize={35}
-              width="100%"
-              itemData={{ ...itemData, options: filteredOptions }}
+              height={Math.min(250, filteredOptions.length * 35)} // Dynamic height based on item count
+              itemCount={filteredOptions.length} // Total items in filtered list
+              itemSize={35} // Fixed row height (matches CSS)
+              width="100%" // Full container width
+              itemData={{ ...itemData, options: filteredOptions }} // Data passed to each row
             >
-              {Row}
+              {Row} // Memoized row renderer
             </List>
           </div>
         </div>
