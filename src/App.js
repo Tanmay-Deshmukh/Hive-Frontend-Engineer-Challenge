@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import Dropdown from './components/Dropdown';
-import './App.css';
+import React, { useState } from "react";
+import Dropdown from "./components/Dropdown";
+import "./App.css";
 
 const options = [
-  { value: 'apple', label: 'Apple' },
-  { value: 'banana', label: 'Banana' },
-  { value: 'orange', label: 'Orange' },
-  { value: 'grape', label: 'Grape' },
-  { value: 'melon', label: 'Melon' },
+  { value: "apple", label: "Apple" },
+  { value: "banana", label: "Banana" },
+  { value: "orange", label: "Orange" },
+  { value: "grape", label: "Grape" },
+  { value: "melon", label: "Melon" },
 ];
 
 // Used for testing performance with a large number of options
@@ -17,14 +17,14 @@ const options = [
 // }
 
 function App() {
-  const [singleValue, setSingleValue] = useState('');
+  const [singleValue, setSingleValue] = useState("");
   const [multiValue, setMultiValue] = useState([]);
 
   return (
     <div className="app">
       <h1>Custom Dropdown Demo</h1>
       <p className="author-name">By Tanmay Deshmukh</p>
-      
+
       <div className="dropdowns-container">
         <div className="dropdown-section">
           <h2>Single Select</h2>

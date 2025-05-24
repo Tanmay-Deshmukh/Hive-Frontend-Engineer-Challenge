@@ -9,30 +9,40 @@
  *  - placeholder: Input placeholder text
  */
 
-import React, { useState, useEffect, useRef, useCallback, memo, useMemo } from 'react';
-import { FixedSizeList as List } from 'react-window';
-import PropTypes from 'prop-types';
-import { ReactComponent as SearchIcon } from './icons/search-icon.svg';
-import { ReactComponent as ClearIcon } from './icons/clear-icon.svg';
-import './Dropdown.css';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  memo,
+  useMemo,
+} from "react";
+import { FixedSizeList as List } from "react-window";
+import PropTypes from "prop-types";
+import { ReactComponent as SearchIcon } from "./icons/search-icon.svg";
+import { ReactComponent as ClearIcon } from "./icons/clear-icon.svg";
+import "./Dropdown.css";
 
 const Dropdown = ({
   options,
   value,
   onChange,
   isMulti = false,
-  placeholder = 'Select...',
+  placeholder = "Select...",
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isVirtualizing, setIsVirtualizing] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const wrapperRef = useRef(null);
 
-  const filteredOptions = useMemo(() => 
-    options.filter(option =>
-      option.label.toLowerCase().includes(searchTerm.toLowerCase())
-    ), [options, searchTerm]);
-  
+  const filteredOptions = useMemo(
+    () =>
+      options.filter((option) =>
+        option.label.toLowerCase().includes(searchTerm.toLowerCase())
+      ),
+    [options, searchTerm]
+  );
+
   // Click outside handler
   const handleClickOutside = useCallback((event) => {
     if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
@@ -42,8 +52,8 @@ const Dropdown = ({
 
   // Effect for click-outside detection
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [handleClickOutside]);
 
   useEffect(() => {
@@ -61,7 +71,7 @@ const Dropdown = ({
   const handleSelect = (option) => {
     if (isMulti) {
       const newValue = value.includes(option.value)
-        ? value.filter(v => v !== option.value)
+        ? value.filter((v) => v !== option.value)
         : [...value, option.value];
       onChange(newValue);
     } else {
@@ -72,17 +82,17 @@ const Dropdown = ({
 
   const handleClearSearch = useCallback((e) => {
     e.stopPropagation();
-    setSearchTerm('');
+    setSearchTerm("");
   }, []);
 
   const selectAll = () => {
     if (isMulti) {
-      const allValues = options.map(opt => opt.value);
+      const allValues = options.map((opt) => opt.value);
       onChange(value.length === options.length ? [] : allValues);
     }
   };
 
-  const isSelected = (valueToCheck) => 
+  const isSelected = (valueToCheck) =>
     isMulti ? value.includes(valueToCheck) : value === valueToCheck;
 
   const isAllSelected = isMulti && value.length === options.length;
@@ -91,7 +101,7 @@ const Dropdown = ({
     options: filteredOptions,
     handleSelect,
     isSelected,
-    isMulti
+    isMulti,
   };
 
   // Virtualization row component
@@ -101,7 +111,9 @@ const Dropdown = ({
       <div
         style={style}
         onClick={() => data.handleSelect(option)}
-        className={`option-item ${data.isSelected(option.value) ? 'selected' : ''}`}
+        className={`option-item ${
+          data.isSelected(option.value) ? "selected" : ""
+        }`}
       >
         {data.isMulti && (
           <input
@@ -120,35 +132,31 @@ const Dropdown = ({
     <div className="dropdown-container" ref={wrapperRef}>
       <div className="dropdown-header" onClick={toggleDropdown}>
         <div className="selected-values">
-          {isMulti ? (
-            value.length > 0 ? (
-              value.map(val => {
-                const option = options.find(opt => opt.value === val);
-                return (
-                  <span key={val} className="multi-value">
-                    {option?.label}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSelect(option);
-                      }}
-                      className="remove-btn"
-                    >
-                      ×
-                    </button>
-                  </span>
-                );
-              })
-            ) : (
-              placeholder
-            )
-          ) : (
-            options.find(opt => opt.value === value)?.label || placeholder
-          )}
+          {isMulti
+            ? value.length > 0
+              ? value.map((val) => {
+                  const option = options.find((opt) => opt.value === val);
+                  return (
+                    <span key={val} className="multi-value">
+                      {option?.label}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSelect(option);
+                        }}
+                        className="remove-btn"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  );
+                })
+              : placeholder
+            : options.find((opt) => opt.value === value)?.label || placeholder}
         </div>
-        <span className={`chevron ${isOpen ? 'open' : ''}`}>▼</span>
+        <span className={`chevron ${isOpen ? "open" : ""}`}>▼</span>
       </div>
-      
+
       {isOpen && (
         <div className="dropdown-list">
           {isMulti && (
@@ -159,7 +167,7 @@ const Dropdown = ({
                   checked={isAllSelected}
                   onChange={selectAll}
                 />
-                {isAllSelected ? 'Deselect All' : 'Select All'}
+                {isAllSelected ? "Deselect All" : "Select All"}
               </label>
             </div>
           )}
@@ -192,7 +200,7 @@ const Dropdown = ({
               width="100%" // Full container width
               itemData={{ ...itemData, options: filteredOptions }} // Data passed to each row
             >
-              {Row} // Memoized row renderer
+              {Row}
             </List>
           </div>
         </div>
@@ -204,7 +212,8 @@ const Dropdown = ({
 Dropdown.propTypes = {
   options: PropTypes.arrayOf(
     PropTypes.shape({
-      value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+        .isRequired,
       label: PropTypes.string.isRequired,
     })
   ).isRequired,
