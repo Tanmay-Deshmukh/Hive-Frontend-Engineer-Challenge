@@ -34,6 +34,7 @@ git clone https://github.com/Tanmay-Deshmukh/Hive-Frontend-Engineer-Challenge
 ```
 2. Install dependencies:
 ```bash
+cd ./Hive-Frontend-Engineer-Challenge
 npm install
 ```
 3. Start the development server:
